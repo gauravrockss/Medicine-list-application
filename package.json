@@ -1,0 +1,52 @@
+{
+    "name": "holz-kind",
+    "productName": "Holz Kind",
+    "version": "0.1.0",
+    "private": true,
+    "main": "main.js",
+    "type": "module",
+    "description": "A Store Manager app",
+    "dependencies": {
+        "electron-squirrel-startup": "^1.0.1",
+        "holz-kind": "file:",
+        "mongoose": "^8.7.0"
+    },
+    "scripts": {
+        "electron": "npx electronmon .",
+        "start": "electron-forge start",
+        "package": "electron-forge package",
+        "make": "electron-forge make"
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
+        ]
+    },
+    "author": "Mohd Ubaid Khan",
+    "license": "MIT",
+    "devDependencies": {
+        "@electron-forge/cli": "^7.4.0",
+        "@electron-forge/maker-deb": "^7.4.0",
+        "@electron-forge/maker-rpm": "^7.4.0",
+        "@electron-forge/maker-squirrel": "^7.4.0",
+        "@electron-forge/maker-zip": "^7.4.0",
+        "@electron-forge/plugin-auto-unpack-natives": "^7.4.0",
+        "@electron-forge/plugin-fuses": "^7.4.0",
+        "@electron/fuses": "^1.8.0",
+        "electron": "^31.4.0",
+        "electronmon": "^2.0.3"
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    }
+}
