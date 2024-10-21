@@ -30,6 +30,7 @@ const MedicineTable = () => {
     const [sellQuantity, setSellQuantity] = useState();
     const [medicineId, setMedicineId] = useState();
     const [currectStock, setCurrectStock] = useState();
+    const [error, setError] = useState('');
 
     // Open/Close modals
     const handleClickOpenBuy = (id, quantity) => {
@@ -85,9 +86,7 @@ const MedicineTable = () => {
     };
 
     const getMedicines = useCallback(async () => {
-        const list = JSON.parse(
-            await window.electron.getMedicines(searchQuery)
-        );
+        const list = JSON.parse(await window.electron.getMedicines(searchQuery));
 
         setMedicines(list);
     }, [searchQuery]);
@@ -103,26 +102,26 @@ const MedicineTable = () => {
             stock: updatedStock,
         });
 
-        setMedicines(prev =>
-            prev.map(med =>
-                med._id === medicineId ? { ...med, stock: updatedStock } : med
-            )
-        );
+        setMedicines(prev => prev.map(med => (med._id === medicineId ? { ...med, stock: updatedStock } : med)));
         handleCloseBuy();
         setBuyQuantity();
     };
 
     const handleSell = async () => {
         const updatedStock = parseInt(currectStock) - parseInt(sellQuantity);
+
+        if (updatedStock < 0) {
+            setError('Not enough stock to sell.');
+            return;
+        }
+
+        setError('');
+
         await window.electron.updateMedicine(medicineId, {
             stock: updatedStock,
         });
 
-        setMedicines(prev =>
-            prev.map(med =>
-                med._id === medicineId ? { ...med, stock: updatedStock } : med
-            )
-        );
+        setMedicines(prev => prev.map(med => (med._id === medicineId ? { ...med, stock: updatedStock } : med)));
 
         handleCloseSell();
         setSellQuantity();
@@ -130,26 +129,17 @@ const MedicineTable = () => {
 
     return (
         <Container maxWidth='false' sx={{ py: 5 }}>
-            <Box
-                display='flex'
-                alignItems='center'
-                justifyContent='space-between'>
+            <Box display='flex' alignItems='center' justifyContent='space-between'>
                 <Box>
                     <Typography variant='h4' fontWeight={500}>
                         Medicine List
                     </Typography>
-                    <Typography
-                        variant='body2'
-                        color='text.secondary'
-                        sx={{ wordSpacing: '2px' }}>
+                    <Typography variant='body2' color='text.secondary' sx={{ wordSpacing: '2px' }}>
                         A dedicated space for medicine inventory management.
                     </Typography>
                 </Box>
                 <Box>
-                    <Button
-                        variant='contained'
-                        color='primary'
-                        onClick={() => setOpenAddMedicine(true)}>
+                    <Button variant='contained' color='primary' onClick={() => setOpenAddMedicine(true)}>
                         Add Medicine
                     </Button>
                 </Box>
@@ -185,9 +175,7 @@ const MedicineTable = () => {
                     <TableBody>
                         {!medicines.length ? (
                             <TableRow>
-                                <TableCell
-                                    colSpan={4}
-                                    sx={{ textAlign: 'center' }}>
+                                <TableCell colSpan={4} sx={{ textAlign: 'center' }}>
                                     No data available
                                 </TableCell>
                             </TableRow>
@@ -202,12 +190,7 @@ const MedicineTable = () => {
                                             variant='contained'
                                             color='primary'
                                             size='small'
-                                            onClick={() =>
-                                                handleClickOpenBuy(
-                                                    medicine._id,
-                                                    medicine.stock
-                                                )
-                                            }>
+                                            onClick={() => handleClickOpenBuy(medicine._id, medicine.stock)}>
                                             Buy
                                         </Button>
                                         <Button
@@ -215,12 +198,7 @@ const MedicineTable = () => {
                                             color='secondary'
                                             size='small'
                                             sx={{ ml: 1 }}
-                                            onClick={() =>
-                                                handleClickOpenSell(
-                                                    medicine._id,
-                                                    medicine.stock
-                                                )
-                                            }>
+                                            onClick={() => handleClickOpenSell(medicine._id, medicine.stock)}>
                                             Sell
                                         </Button>
                                     </TableCell>
@@ -258,18 +236,10 @@ const MedicineTable = () => {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button
-                        onClick={handleCloseAddMedicine}
-                        variant='contained'
-                        color='secondary'
-                        size='small'>
+                    <Button onClick={handleCloseAddMedicine} variant='contained' color='secondary' size='small'>
                         Cancel
                     </Button>
-                    <Button
-                        onClick={handleAddMedicine}
-                        variant='contained'
-                        color='primary'
-                        size='small'>
+                    <Button onClick={handleAddMedicine} variant='contained' color='primary' size='small'>
                         Add
                     </Button>
                 </DialogActions>
@@ -291,18 +261,10 @@ const MedicineTable = () => {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button
-                        onClick={handleCloseBuy}
-                        variant='contained'
-                        color='secondary'
-                        size='small'>
+                    <Button onClick={handleCloseBuy} variant='contained' color='secondary' size='small'>
                         Cancel
                     </Button>
-                    <Button
-                        onClick={handleBuy}
-                        variant='contained'
-                        color='primary'
-                        size='small'>
+                    <Button onClick={handleBuy} variant='contained' color='primary' size='small'>
                         Buy
                     </Button>
                 </DialogActions>
@@ -322,20 +284,15 @@ const MedicineTable = () => {
                         value={sellQuantity}
                         onChange={e => setSellQuantity(e.target.value)}
                     />
+                    <Typography variant='caption' color='error'>
+                        {error}
+                    </Typography>
                 </DialogContent>
                 <DialogActions>
-                    <Button
-                        onClick={handleCloseSell}
-                        variant='contained'
-                        color='secondary'
-                        size='small'>
+                    <Button onClick={handleCloseSell} variant='contained' color='secondary' size='small'>
                         Cancel
                     </Button>
-                    <Button
-                        onClick={handleSell}
-                        variant='contained'
-                        color='primary'
-                        size='small'>
+                    <Button onClick={handleSell} variant='contained' color='primary' size='small'>
                         Sell
                     </Button>
                 </DialogActions>

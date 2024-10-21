@@ -3,13 +3,10 @@ import Medicine from '../models/Medicine.js';
 
 // MongoDB connection
 mongoose
-    .connect(
-        'mongodb+srv://gauravgupta:MGYpibgHvfpLGW51@cluster0.azhi3ij.mongodb.net/medicine-stock',
-        {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        }
-    )
+    .connect('mongodb+srv://admin:Luckya1546920@cluster0.jooxl.mongodb.net/medicine-stock', {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    })
     .then(() => console.log('MongoDB connected'))
     .catch(err => console.error('MongoDB connection error:', err));
 
@@ -23,9 +20,7 @@ export const createMedicine = async medicineData => {
 
 // Read Medicines
 export const getMedicines = async (search = '') => {
-    const list = JSON.stringify(
-        await Medicine.find({ name: new RegExp(search) })
-    );
+    const list = JSON.stringify(await Medicine.find({ name: new RegExp(search) }));
     return list;
 };
 
